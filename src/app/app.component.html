@@ -1,0 +1,70 @@
+<head>
+  <!-- Other tags... -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<div class="credit-card-form">
+  <h2>Credit Card Payment</h2>
+  <form [formGroup]="cardForm">
+    
+    <div class="form-group">
+    <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Card Number</mat-label>
+      <mat-icon matSuffix class="fas" [ngClass]="{'fa-eye': !showCardDetails, 'fa-eye-slash': showCardDetails}"
+      (click)="toggleCardDetails()"></mat-icon>
+      <input required autocomplete="cc-number" matInput class="form-control" type="text" id="cardNumber" [class.hide-input]="!showCardDetails"
+      formControlName="cardNumber" [maxlength]="getCardMaxLength()" [(ngModel)]="cardNumber"
+      (keyup)="onCardNumberChange(cardForm.get('cardNumber')?.value)">
+  
+    </mat-form-field>
+
+      <mat-form-field appearance="fill" class="example-cvv-width">
+        <mat-label>CVV</mat-label>
+        <mat-icon matSuffix class="fas" [ngClass]="{'fa-eye': !showCVVDetails, 'fa-eye-slash': showCVVDetails}"
+        (click)="toggleCVVDetails()"></mat-icon>
+        <input #cvvInput autocomplete="cc-csc" matInput type="text" id="cvv" [class.hide-input]="!showCVVDetails" formControlName="cvv" class="form-control"
+        [(ngModel)]="cvv" [attr.maxlength]="cvvMaxLength" (keyup)="cvvValidator(cardForm.get('cvv')?.value)">
+      </mat-form-field>
+  </div>
+  <div class="form-group-container">
+    <div class="form-group">
+      <mat-form-field appearance="fill">
+        <mat-label>Expiration Month</mat-label>
+        <mat-select required>
+          <mat-option *ngFor="let month of ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']" [value]="month">
+            {{month}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  
+    <div class="form-group">
+      <mat-form-field appearance="fill">
+        <mat-label>Expiration Year</mat-label>
+        <mat-select required>
+          <mat-option *ngFor="let year of getYears()" [value]="year">
+            {{year}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  
+    <div class="form-group">
+      <mat-form-field appearance="fill">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" id="name" formControlName="name">
+      </mat-form-field>
+    </div>
+  </div>
+  </form>
+
+  <div class="form-group">
+    <p>Card Type: {{cardType}}</p>
+  </div>
+  <div
+    *ngIf="cardForm.get('cardNumber')?.errors?.['invalidLuhn'] && (cardForm.get('cardNumber')?.dirty || cardForm.get('cardNumber')?.touched)">
+    Invalid Card Number
+  </div>
+  <div class="form-group" *ngIf="cardForm.get('cardNumber')?.valid">
+    Card Number is valid!
+  </div>
+</div>
